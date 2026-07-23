@@ -154,6 +154,31 @@ ${record.question}
     setTimeout(() => URL.revokeObjectURL(url), 500);
   }
 
+  async function copyText(text) {
+    const clipboard = globalThis.navigator && globalThis.navigator.clipboard;
+    if (globalThis.isSecureContext && clipboard && typeof clipboard.writeText === "function") {
+      try {
+        await clipboard.writeText(text);
+        return;
+      } catch (_) {
+        // Continue to the offline-compatible fallback below.
+      }
+    }
+
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.inset = "-9999px auto auto -9999px";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    textarea.setSelectionRange(0, textarea.value.length);
+    const copied = document.execCommand("copy");
+    textarea.remove();
+    if (!copied) throw new Error("浏览器未允许复制");
+  }
+
   function setMessage(message, isError) {
     const element = document.getElementById("action-message");
     element.textContent = message;
@@ -237,8 +262,11 @@ ${record.question}
     document.getElementById("question").value = "";
     const castButton = document.getElementById("cast-all");
     castButton.disabled = false;
-    castButton.textContent = "一键起卦";
-    document.getElementById("coin-message").textContent = "一次问题，只起一卦。";
+    document.getElementById("cast-button-label").textContent = "一键起卦";
+    document.getElementById("cast-button-arrow").textContent = "→";
+    const copyLabel = document.querySelector("#copy-markdown span:last-child");
+    if (copyLabel) copyLabel.textContent = "复制卦象";
+    document.getElementById("coin-message").textContent = "确认问题后点击一次，自动生成六爻。";
     document.getElementById("action-message").textContent = "";
     updateAll();
     showScreen("cast");
@@ -259,10 +287,29 @@ ${record.question}
       document.getElementById("coin-message").textContent = `成卦：${state.lines.join("、")}（自下而上）`;
       updateAll();
       document.getElementById("cast-all").disabled = true;
-      document.getElementById("cast-all").textContent = "已经成卦";
+      document.getElementById("cast-button-label").textContent = "已经成卦";
+      document.getElementById("cast-button-arrow").textContent = "✓";
       showScreen("result");
     });
     document.getElementById("back-to-cast").addEventListener("click", resetCast);
+    document.getElementById("copy-markdown").addEventListener("click", async () => {
+      const record = validatedRecord(); if (!record) return;
+      const button = document.getElementById("copy-markdown");
+      const label = button.querySelector("span:last-child");
+      button.disabled = true;
+      try {
+        await copyText(recordToMarkdown(record));
+        label.textContent = "已经复制";
+        setMessage("卦象已复制，可以直接切换到 AI 对话粘贴。", false);
+      } catch (_) {
+        setMessage("复制失败；请改用“导出卦象”后再复制文件内容。", true);
+      } finally {
+        setTimeout(() => {
+          button.disabled = false;
+          label.textContent = "复制卦象";
+        }, 1800);
+      }
+    });
     document.getElementById("export-md").addEventListener("click", () => {
       const record = validatedRecord(); if (!record) return;
       const date = (record.castTime || nowLocalInputValue()).slice(0, 10);
@@ -273,7 +320,7 @@ ${record.question}
     showScreen("cast");
   }
 
-  const core = { analyzeLines, hexagramFromBits, movingLineName, recordToMarkdown };
+  const core = { analyzeLines, copyText, hexagramFromBits, movingLineName, recordToMarkdown };
   if (typeof module !== "undefined" && module.exports) module.exports = core;
   if (typeof window !== "undefined") window.YijingCore = core;
   if (typeof document !== "undefined") document.addEventListener("DOMContentLoaded", init);

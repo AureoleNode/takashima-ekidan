@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="color-scheme" content="light dark">
   <meta name="referrer" content="no-referrer">
-  <meta name="description" content="本地离线的高岛断易起卦与卦象导出工具">
+  <meta name="description" content="本地离线的高岛断易起卦、复制与卦象导出工具">
   <title>高岛断易 · 起卦录</title>
   <script>
     try {
@@ -19,13 +19,16 @@
 <body>
   <div class="paper-grain" aria-hidden="true"></div>
   <header class="site-header">
-    <div class="brand-mark" aria-hidden="true">易</div>
-    <div>
-      <p class="eyebrow">TAKASHIMA EKIDAN · LOCAL WORKBENCH</p>
-      <h1>高岛断易 · 起卦录</h1>
-      <p class="subtitle">写清问题，留下原始卦；如何分析，由你决定。</p>
+    <div class="brand-cluster">
+      <div class="brand-mark" aria-hidden="true">易</div>
+      <div>
+        <p class="eyebrow">TAKASHIMA EKIDAN · LOCAL WORKBENCH</p>
+        <h1>高岛断易 · 起卦录</h1>
+        <p class="subtitle">写清问题，留下原始卦；如何分析，由你决定。</p>
+      </div>
     </div>
     <div class="header-actions">
+      <span class="release-badge">v1.1</span>
       <button id="theme-toggle" class="theme-toggle" type="button" aria-label="切换为黑夜模式" aria-pressed="false">
         <span id="theme-icon" aria-hidden="true">☾</span>
         <span id="theme-label">黑夜</span>
@@ -36,35 +39,64 @@
 
   <main>
     <section id="cast-screen" class="screen">
-      <section class="intro-card">
-        <div>
-          <span class="section-no">〇一</span>
-          <h2>写下问题</h2>
+      <section class="cast-workbench">
+        <div class="workbench-guide">
+          <div>
+            <span class="guide-kicker">一次一问 · 一问一卦</span>
+            <h2>先把问题说清楚，<br>余下交给六次掷币。</h2>
+            <p class="guide-lead">这是一张干净的起卦工作台：不替你下结论，只留下可核对的原始记录。</p>
+          </div>
+
+          <ol class="process-list">
+            <li>
+              <span>01</span>
+              <div><b>写问题</b><p>只问一件事，需要时写明时间范围。</p></div>
+            </li>
+            <li>
+              <span>02</span>
+              <div><b>生成卦象</b><p>一次点击，自动完成六次三钱法模拟。</p></div>
+            </li>
+            <li>
+              <span>03</span>
+              <div><b>复制或留档</b><p>直接复制给 AI，或导出 Markdown 保存。</p></div>
+            </li>
+          </ol>
+
+          <div class="local-note">
+            <span aria-hidden="true">⌁</span>
+            <p><b>本地计算</b>　问题不会由本工具上传。</p>
+          </div>
         </div>
-        <p class="section-help">一次只问一件事；需要时间范围时，直接写进问题。</p>
-        <div class="form-grid">
-          <label class="field question-field">
-            <span>所占何事 <b>必填</b></span>
-            <textarea id="question" rows="2" placeholder="例：未来三个月是否应继续执行当前交易方案？"></textarea>
+
+        <div class="cast-form-card">
+          <div class="form-card-heading">
+            <div>
+              <span class="section-no">开始起卦</span>
+              <h2>所占何事</h2>
+            </div>
+            <span class="required-pill">必填</span>
+          </div>
+
+          <label class="question-field">
+            <span class="input-label">一次只问一件事；需要时间范围时，直接写进问题。</span>
+            <textarea id="question" rows="4" placeholder="例如：未来三个月是否应继续执行当前方案？"></textarea>
           </label>
+
+          <p class="question-example"><span>推荐句式</span> 在【时间范围】内，我是否应该【具体行动】？</p>
+
+          <button id="cast-all" class="cast-button" type="button">
+            <span id="cast-button-label">一键起卦</span>
+            <span id="cast-button-arrow" class="button-arrow" aria-hidden="true">→</span>
+          </button>
+
+          <div class="cast-meta">
+            <p id="coin-message" class="coin-message" aria-live="polite">确认问题后点击一次，自动生成六爻。</p>
+            <p>不登录 · 不联网也能用 · 不自动解读</p>
+          </div>
         </div>
       </section>
 
-      <section class="casting-layout input-layout">
-        <article class="panel casting-panel">
-          <div class="section-heading">
-            <div><span class="section-no">〇二</span><h2>一键起卦</h2></div>
-            <span class="direction-note">自动生成六爻</span>
-          </div>
-
-          <div class="one-click-cast">
-            <div class="cast-emblem" aria-hidden="true"><span>阴</span><b>易</b><span>阳</span></div>
-            <p>确认问题后点击一次。页面会模拟六次三钱法，从初爻到上爻自动成卦。</p>
-            <button id="cast-all" class="cast-button" type="button">一键起卦</button>
-            <p id="coin-message" class="coin-message" aria-live="polite">一次问题，只起一卦。</p>
-          </div>
-        </article>
-      </section>
+      <p class="workbench-footnote">传统文化记录工具，仅供参考；不替代医疗、法律、财务或交易中的专业判断。</p>
     </section>
 
     <section id="result-screen" class="screen" hidden>
@@ -102,13 +134,17 @@
 
       <section class="export-card">
         <div>
-          <span class="section-no">〇四</span>
-          <h2>保存卦象</h2>
-          <p>导出的 Markdown 只保留“问题”和“卦象”。</p>
+          <span class="section-no">下一步</span>
+          <h2>复制询问，或导出留档</h2>
+          <p>复制内容与导出的 Markdown 完全一致，只包含问题和卦象。</p>
         </div>
         <div class="export-actions">
           <button id="back-to-cast" class="secondary-btn" type="button">返回重起</button>
-          <button id="export-md" class="primary-btn" type="button">导出卦象</button>
+          <button id="copy-markdown" class="primary-btn copy-btn" type="button">
+            <span aria-hidden="true">⧉</span>
+            <span>复制卦象</span>
+          </button>
+          <button id="export-md" class="secondary-btn export-btn" type="button">导出卦象</button>
         </div>
         <p id="action-message" class="action-message" role="status"></p>
       </section>
