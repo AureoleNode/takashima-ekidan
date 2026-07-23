@@ -1,0 +1,16 @@
+# Personal divination records and interpretations
+卦象/
+解读/
+
+# Local exports and scratch files
+*.local.*
+*.tmp
+
+# Editor / OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Optional development dependencies
+node_modules/

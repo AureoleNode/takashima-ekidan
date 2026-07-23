@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="本地离线的高岛断易起卦与卦象导出工具">
+  <title>高岛断易 · 起卦录</title>
+  <script>
+    try {
+      const savedTheme = localStorage.getItem("takashima-theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = savedTheme || (prefersDark ? "dark" : "light");
+    } catch (_) {}
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="paper-grain" aria-hidden="true"></div>
+  <header class="site-header">
+    <div class="brand-mark" aria-hidden="true">易</div>
+    <div>
+      <p class="eyebrow">TAKASHIMA EKIDAN · LOCAL WORKBENCH</p>
+      <h1>高岛断易 · 起卦录</h1>
+      <p class="subtitle">写清问题，留下原始卦；如何分析，由你决定。</p>
+    </div>
+    <div class="header-actions">
+      <button id="theme-toggle" class="theme-toggle" type="button" aria-label="切换为黑夜模式" aria-pressed="false">
+        <span id="theme-icon" aria-hidden="true">☾</span>
+        <span id="theme-label">黑夜</span>
+      </button>
+      <div class="header-seal" aria-hidden="true">慎<br>断</div>
+    </div>
+  </header>
+
+  <main>
+    <section id="cast-screen" class="screen">
+      <section class="intro-card">
+        <div>
+          <span class="section-no">〇一</span>
+          <h2>写下问题</h2>
+        </div>
+        <p class="section-help">一次只问一件事；需要时间范围时，直接写进问题。</p>
+        <div class="form-grid">
+          <label class="field question-field">
+            <span>所占何事 <b>必填</b></span>
+            <textarea id="question" rows="2" placeholder="例：未来三个月是否应继续执行当前交易方案？"></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section class="casting-layout input-layout">
+        <article class="panel casting-panel">
+          <div class="section-heading">
+            <div><span class="section-no">〇二</span><h2>一键起卦</h2></div>
+            <span class="direction-note">自动生成六爻</span>
+          </div>
+
+          <div class="one-click-cast">
+            <div class="cast-emblem" aria-hidden="true"><span>阴</span><b>易</b><span>阳</span></div>
+            <p>确认问题后点击一次。页面会模拟六次三钱法，从初爻到上爻自动成卦。</p>
+            <button id="cast-all" class="cast-button" type="button">一键起卦</button>
+            <p id="coin-message" class="coin-message" aria-live="polite">一次问题，只起一卦。</p>
+          </div>
+        </article>
+      </section>
+    </section>
+
+    <section id="result-screen" class="screen" hidden>
+      <article class="panel result-panel" id="result-panel">
+        <div class="section-heading">
+          <div><span class="section-no">〇三</span><h2>卦象</h2></div>
+          <span id="result-status" class="status-pill">待成卦</span>
+        </div>
+        <div id="empty-result" class="empty-result">
+          <div class="empty-symbol">☷</div>
+          <p>六爻齐备后，在这里生成本卦、动爻、之卦与互卦。</p>
+        </div>
+        <div id="result-content" class="result-content" hidden>
+          <div class="hexagram-summary">
+            <div class="hex-title primary-hex">
+              <span class="hex-role">本卦</span>
+              <strong id="primary-symbol">䷀</strong>
+              <div><h3 id="primary-name">第1卦 · 乾为天</h3><p id="primary-trigrams">上乾 · 下乾</p></div>
+            </div>
+            <div class="change-arrow" aria-hidden="true">→</div>
+            <div class="hex-title">
+              <span class="hex-role">之卦</span>
+              <strong id="changed-symbol">—</strong>
+              <div><h3 id="changed-name">无动爻</h3><p id="changed-trigrams">本卦不变</p></div>
+            </div>
+          </div>
+          <div class="result-grid">
+            <div class="result-detail"><span>动爻</span><b id="moving-lines">无</b></div>
+            <div class="result-detail"><span>互卦</span><b id="nuclear-hex">—</b></div>
+            <div class="result-detail"><span>原始数列</span><b id="raw-lines">—</b></div>
+          </div>
+          <p class="result-caution">页面只生成并保存卦象，不自动给出结论。</p>
+        </div>
+      </article>
+
+      <section class="export-card">
+        <div>
+          <span class="section-no">〇四</span>
+          <h2>保存卦象</h2>
+          <p>导出的 Markdown 只保留“问题”和“卦象”。</p>
+        </div>
+        <div class="export-actions">
+          <button id="back-to-cast" class="secondary-btn" type="button">返回重起</button>
+          <button id="export-md" class="primary-btn" type="button">导出卦象</button>
+        </div>
+        <p id="action-message" class="action-message" role="status"></p>
+      </section>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>高岛断易 · 起卦录</span>
+    <span>离线运行 · 数据由你掌握</span>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
