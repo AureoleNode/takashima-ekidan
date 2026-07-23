@@ -1,9 +1,9 @@
 {
   "name": "takashima-ekidan",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "private": true,
   "license": "UNLICENSED",
-  "description": "本地离线的高岛断易起卦与卦象导出工具",
+  "description": "本地离线的高岛断易起卦、复制与卦象导出工具",
   "scripts": {
     "start": "node scripts/serve.js",
     "test": "node tests/app.test.js"
